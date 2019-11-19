@@ -5,7 +5,7 @@ echo "Logging into ECR..."
 $(aws ecr get-login --no-include-email)
 
 # scan source repo and pull out all image tags
-image_tags=$(aws ecr list-images --repository-name $SOURCE_REPO_NAME --max-items 1000 --query 'imageIds[*].imageTag' --profile $AWS_PROFILE | jq -r '.[]')
+image_tags=$(aws ecr list-images --repository-name $SOURCE_REPO_NAME --max-items 1000 --query 'imageIds[*].imageTag' | jq -r '.[]')
 semver_regex="^([0-9]+)\.([0-9]+)\.([0-9]+)$"
 
 for i in ${image_tags}
