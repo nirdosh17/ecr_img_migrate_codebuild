@@ -1,0 +1,76 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CodeBuild project for continuous integration and Artifact uploads
+
+Parameters:
+  GitRepo:
+    Type: String
+
+Resources:
+  CodeBuildIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: "/"
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - codebuild.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+        - PolicyName: !Join ['-', [!Ref 'AWS::StackName', 'codebuild-policy']]
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:*
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - "ecr:GetAuthorizationToken"
+                  - "ecr:PutImage"
+                  - "ecr:InitiateLayerUpload"
+                  - "ecr:UploadLayerPart"
+                  - "ecr:CompleteLayerUpload"
+                  - "ecr:BatchCheckLayerAvailability"
+                Resource: '*'
+
+  CodeBuildCodeIntegration:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: ECR Images Migration Codebuild
+      Description: Codebuild to migrate docker images from one ECR repository to another inside the same account
+      ServiceRole: !GetAtt CodeBuildIAMRole.Arn
+      Artifacts:
+        Type: no_artifacts
+      Source:
+        Type: GITHUB
+        Auth:
+          Type: OAUTH
+        Location: !Sub https://github.com/${GitRepo}.git
+        BuildSpec: |
+          version: 0.2
+          phases:
+            install:
+              runtime-versions:
+                golang: 1.12
+            build:
+              commands:
+              - chmod +x migrate_images.sh
+              - ./migrate_images.sh
+
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/docker:17.09.0
+        EnvironmentVariables:
+          - Name: SOURCE_REPO_NAME
+            Value: ""
+          -
+            Name: DEST_REPO_NAME
+            Value: ""
+          -
+            Name: ACCOUNT_ID
+            Value: ""
