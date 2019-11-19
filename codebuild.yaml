@@ -29,13 +29,7 @@ Resources:
                 Resource: '*'
               - Effect: Allow
                 Action:
-                  - "ecr:GetAuthorizationToken"
-                  - "ecr:PutImage"
-                  - "ecr:InitiateLayerUpload"
-                  - "ecr:UploadLayerPart"
-                  - "ecr:CompleteLayerUpload"
-                  - "ecr:BatchCheckLayerAvailability"
-                  - "ecr:ListImages"
+                  - "ecr:*"
                 Resource: '*'
 
   CodeBuildCodeIntegration:
