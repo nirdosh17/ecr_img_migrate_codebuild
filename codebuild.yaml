@@ -35,6 +35,7 @@ Resources:
                   - "ecr:UploadLayerPart"
                   - "ecr:CompleteLayerUpload"
                   - "ecr:BatchCheckLayerAvailability"
+                  - "ecr:ListImages"
                 Resource: '*'
 
   CodeBuildCodeIntegration:
@@ -56,6 +57,8 @@ Resources:
             install:
               runtime-versions:
                 golang: 1.12
+              commands:
+              - apt-get update -y && apt-get install jq -y
             build:
               commands:
               - chmod +x migrate_images.sh
