@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: CodeBuild project for continuous integration and Artifact uploads
+Description: CodeBuild project for migrating ECR images from one repo to another
 
 Parameters:
   GitRepo:
@@ -40,7 +40,7 @@ Resources:
   CodeBuildCodeIntegration:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: ECR Images Migration Codebuild
+      Name: ECR-Image-Migration-Codebuild
       Description: Codebuild to migrate docker images from one ECR repository to another inside the same account
       ServiceRole: !GetAtt CodeBuildIAMRole.Arn
       Artifacts:
