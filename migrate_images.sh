@@ -11,7 +11,7 @@ semver_regex="^([0-9]+)\.([0-9]+)\.([0-9]+)$"
 for i in ${image_tags}
 do
   # only migrate images with correct semantic versions i.e. only those created from the master branch
-  # if [[ $i =~ $semver_regex ]]; then
+  if [[ $i =~ $semver_regex ]]; then
     echo "Pulling $SOURCE_REPO_URL:$i"
     docker pull $SOURCE_REPO_URL:$i
     echo "Retagging..."
@@ -21,5 +21,5 @@ do
     # delete the local image
     echo "Deleting local images.."
     docker rmi $SOURCE_REPO_URL:$i $DEST_REPO_URL:$i
-  # fi
+  fi
 done
