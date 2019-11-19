@@ -1,4 +1,4 @@
-GIT_REPO=nirdosh17/ecr_image_migrate_codebuild
+GIT_REPO=nirdosh17/ecr_img_migrate_codebuild
 
 create-codebuild:
 	aws cloudformation create-stack --stack-name ecr-migrate-codebuild --template-body file://codebuild.yaml $(MAKE_ARGS) --capabilities CAPABILITY_NAMED_IAM --parameters $(CODEBUILD_ARGS)
